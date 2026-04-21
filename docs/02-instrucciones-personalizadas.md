@@ -88,7 +88,11 @@ Observa el resultado. Verifica que:
 
 Si alguna de esas cosas falla, las instrucciones no se cargaron. Verifica que el archivo está en `.github/copilot-instructions.md` exactamente y reinicia VS Code si hace falta.
 
-Importante: aunque las instrucciones se carguen, Copilot puede no seguirlas siempre. Es no determinista. Si una regla es crítica, refuérzala en el prompt: "Recuerda usar decimal para los montos".
+Importante: aunque las instrucciones se carguen, Copilot puede no seguirlas siempre. Es no determinista. Si una regla es crítica, refuérzala en el prompt agregando algo como:
+
+```text
+Recuerda usar decimal para los montos.
+```
 
 ## Paso 2.3: Identificar reglas que no son repo-wide
 

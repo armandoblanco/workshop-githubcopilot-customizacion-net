@@ -225,7 +225,12 @@ Observa el efecto: cada agente tiene capacidades estrictamente delimitadas. Si e
 Para confirmar que las restricciones funcionan, prueba esto:
 
 1. Selecciona el agente **revisor-seguridad**.
-2. Pídele directamente: "Corrige el bug de la fórmula de amortización en `PrestamoServicio.cs`".
+2. Pégale este prompt directamente:
+
+   ```text
+   Corrige el bug de la fórmula de amortización en `PrestamoServicio.cs`.
+   ```
+
 3. El agente debería responder que no puede editar archivos y devolverte una sugerencia textual.
 
 Si el agente intenta editarlo y falla, el log de chat debería mostrarlo. Si lo edita igual, revisa que el campo `tools` en el frontmatter solo tiene tools de lectura.

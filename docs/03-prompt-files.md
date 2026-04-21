@@ -123,7 +123,13 @@ Observa que Copilot:
 3. Crea los archivos siguiendo las convenciones de `endpoints.instructions.md`.
 4. Genera un test de integración correspondiente.
 
-Si el modelo procede directamente sin pedir confirmación, refuerza con: "Recuerda mostrarme el plan primero". Es no determinista.
+Si el modelo procede directamente sin pedir confirmación, refuerza con:
+
+```text
+Recuerda mostrarme el plan primero.
+```
+
+Es no determinista.
 
 ## Paso 3.4: Crear `/revisar-prestamo`
 
