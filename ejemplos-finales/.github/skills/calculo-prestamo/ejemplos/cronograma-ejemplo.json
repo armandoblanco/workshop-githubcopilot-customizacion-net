@@ -1,0 +1,26 @@
+{
+  "descripcion": "Ejemplo de salida esperada para monto=100000 MXN, tasa=18% anual, plazo=12 meses. Valores redondeados a dos decimales con MidpointRounding.AwayFromZero.",
+  "entrada": {
+    "monto": 100000,
+    "tasaAnual": 0.18,
+    "plazoMeses": 12
+  },
+  "resultado": {
+    "cuotaMensual": 9168.00,
+    "costoTotalAjustado": 110015.99,
+    "interesesTotales": 10015.99
+  },
+  "primerasFilas": [
+    { "numero": 1, "cuota": 9168.00, "interes": 1500.00, "capital": 7668.00, "saldoFinal": 92332.00 },
+    { "numero": 2, "cuota": 9168.00, "interes": 1384.98, "capital": 7783.02, "saldoFinal": 84548.98 },
+    { "numero": 3, "cuota": 9168.00, "interes": 1268.23, "capital": 7899.77, "saldoFinal": 76649.21 }
+  ],
+  "ultimaFila": {
+    "numero": 12,
+    "cuota": 9167.99,
+    "interes": 135.49,
+    "capital": 9032.50,
+    "saldoFinal": 0.00,
+    "nota": "La última cuota se ajusta en 0.01 para absorber el redondeo acumulado y dejar el saldo en exactamente 0."
+  }
+}

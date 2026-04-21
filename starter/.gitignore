@@ -1,0 +1,26 @@
+# Build artifacts
+bin/
+obj/
+out/
+*.user
+*.suo
+
+# VS Code
+.vscode/*
+!.vscode/settings.json
+!.vscode/tasks.json
+!.vscode/launch.json
+!.vscode/extensions.json
+
+# Rider
+.idea/
+
+# macOS
+.DS_Store
+
+# Logs
+*.log
+
+# dotnet
+*.userosscache
+*.sln.docstates
