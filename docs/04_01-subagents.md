@@ -244,7 +244,12 @@ Las dos líneas clave del frontmatter:
 1. En el dropdown de agentes, selecciona **feature-builder**.
 2. Verifica que **planificador**, **codificador** y **auditor** NO aparecen
    en el dropdown (porque tienen `user-invocable: false`).
-3. Escribe en el chat: "Necesito agregar un endpoint POST /api/prestamos/cancelar/{id} que cambie el estado de un préstamo a cancelado solo si está en estado solicitado".
+3. Pega este prompt en el chat:
+
+   ```text
+   Necesito agregar un endpoint POST /api/prestamos/cancelar/{id} que cambie
+   el estado de un préstamo a cancelado solo si está en estado solicitado.
+   ```
 4. Observa cómo el coordinador, sin pedirte clic intermedio:
    - Invoca al planificador y obtiene el plan.
    - Invoca al codificador, que escribe y compila el código.
@@ -336,7 +341,11 @@ Si alguna lente reportó que todo está limpio en su área, recógelo aquí.
 ### Probar el patrón paralelo
 
 1. Selecciona **revisor-360** en el dropdown.
-2. Escribe: "Revisa el archivo `Services/PrestamoServicio.cs`".
+2. Pega este prompt:
+
+   ```text
+   Revisa el archivo `Services/PrestamoServicio.cs`.
+   ```
 3. Observa en el chat: deberías ver cuatro subagent tool calls aparecer
    simultáneamente (no en secuencia). Cada uno con su propia barra de
    progreso.

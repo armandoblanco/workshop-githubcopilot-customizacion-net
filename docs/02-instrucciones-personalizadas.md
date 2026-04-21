@@ -154,10 +154,21 @@ Una regla que se ve mucho en repos en producción y que conviene copiar: en mono
 ## Paso 2.6: Verificar que las instrucciones path-specific funcionan
 
 1. Abre un archivo dentro de `ContosoBanco.Loans.Tests/`.
-2. En Copilot Chat (modo Agent), pide: "Genera un test para `PrestamoServicio.Calcular` que cubra el caso de monto negativo".
+2. En Copilot Chat (modo Agent), pega este prompt:
+
+   ```text
+   Genera un test para `PrestamoServicio.Calcular` que cubra el caso de monto negativo.
+   ```
+
 3. Verifica que el nombre del método sigue el patrón `Calcular_MontoNegativo_LanzaArgumentException` y que no usa Moq.
 
-Ahora abre `Program.cs` o un archivo en `Endpoints/` y pide algo relacionado con un endpoint. Verifica que aparece `.WithOpenApi()` y `.Produces<>()`.
+Ahora abre `Program.cs` o un archivo en `Endpoints/` y pega este prompt:
+
+```text
+Agrega un endpoint GET /api/prestamos/{id}/cronograma que devuelva el cronograma de pagos del préstamo indicado.
+```
+
+Verifica que aparece `.WithOpenApi()` y `.Produces<>()`.
 
 Si las reglas no se aplican, revisa:
 

@@ -66,10 +66,25 @@ Es común confundirlos. Un ejemplo con el mismo objetivo —revisar seguridad de
 | Necesidad | Solución correcta | Por qué |
 |-----------|-------------------|---------|
 | Texto fijo de 20 líneas que quiero reutilizar | **Prompt file** | No hay scripts, no hay rol. Solo una plantilla. |
-| Quiero un revisor que nunca pueda editar código | **Custom agent** | Restringes tools (`read_file`, pero no `edit_file`). El dropdown lo deja activo toda la sesión. |
+| Quiero un revisor que nunca pueda editar código | **Custom agent** (revisor read-only) | Restringes tools (`read_file`, pero no `edit_file`). El dropdown lo deja activo toda la sesión. |
+| Quiero un planificador que diseñe antes de tocar código | **Custom agent** (arquitecto) | Sin tools de edición ni ejecución. Fuerza a producir un plan en Markdown que luego otro agente implementa. Modelo fuerte (Opus) para razonamiento. |
+| Quiero un ejecutor que solo aplique un plan ya aprobado | **Custom agent** (implementador) | Tools de `edit_file` y `runCommands` (para `dotnet build`), pero no puede cambiar arquitectura. Modelo más barato (Sonnet). |
+| Quiero un revisor de dominio financiero con reglas de negocio | **Custom agent** (auditor-dominio) | System prompt con reglas específicas (uso de `decimal`, amortización francesa, rangos válidos). Solo lectura. Modelo Opus. |
+| Quiero un agente de pruebas que escriba y ejecute tests xUnit | **Custom agent** (tester) | Tools de `edit_file` y `runCommands` limitados al proyecto `*.Tests`. System prompt con convenciones AAA y nombres en español. |
+| Quiero un agente de migración de APIs legacy a Minimal API | **Custom agent** (migrador) | Rol muy específico que rara vez uso; perfecto para aislar en un agente que se activa manualmente solo cuando toca migrar. |
+| Quiero un coordinador que orqueste arquitecto → implementador → auditor sin clics | **Custom agent** con subagents | Tool `agent` + campo `agents: [...]`. Ver [módulo 4.1](04_01-subagents.md). |
 | Quiero empacar el revisor con un script que corre `dotnet format` y un checklist YAML | **Skill** | Tiene recursos externos (script, checklist) que viajan junto al `SKILL.md`. |
 
 Regla: **el prompt file es texto, la skill es texto + archivos, el agente es identidad**.
+
+Cuándo un rol merece su propio agente (y no ser solo un prompt file):
+
+- Necesitas **restringir tools** para garantías estructurales (un revisor que físicamente no puede editar).
+- Quieres usar un **modelo distinto** al por defecto (Opus para razonar, Sonnet para ejecutar, modelo barato para clasificar).
+- El rol es **persistente**: lo activas y haces varias interacciones bajo esa identidad sin tener que re-invocar una receta cada turno.
+- Participa en **handoffs** o **subagents** con otros agentes.
+
+Si ninguna de esas cuatro aplica, probablemente lo que necesitas es un prompt file.
 
 ## Subagents: un agente que invoca a otros
 

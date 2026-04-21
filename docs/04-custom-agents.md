@@ -204,7 +204,14 @@ si corrige y vuelve al implementador, o si descarta los hallazgos.
 ## Paso 4.4: Probar el flujo completo
 
 1. En el dropdown de agentes (caja de chat), selecciona **arquitecto**.
-2. Escribe: "Necesitamos agregar la capacidad de simular un préstamo antes de crearlo. Debe devolver la cuota mensual, el costo total y el cronograma de pagos. Diseña un plan."
+2. Pega este prompt:
+
+   ```text
+   Necesitamos agregar la capacidad de simular un préstamo antes de crearlo.
+   Debe devolver la cuota mensual, el costo total y el cronograma de pagos.
+   Diseña un plan.
+   ```
+
 3. Verifica que devuelve un plan estructurado, sin tocar archivos.
 4. Al final del turno, debería aparecer el botón "Pasar al implementador". Haz clic.
 5. El implementador ejecuta el plan, hace commits, devuelve un reporte.
