@@ -3,6 +3,8 @@
 Este es el punto de partida del workshop. Una API mínima de préstamos con dos
 endpoints funcionales, un servicio con bugs deliberados y un test de smoke.
 
+> Los comandos `dotnet` y `git` de este archivo funcionan igual en macOS, Linux y Windows (PowerShell o cmd).
+
 ## Correr
 
 ```bash

@@ -6,7 +6,11 @@ Tiempo estimado: 10 minutos.
 
 Tener todos los participantes con el código base corriendo, Copilot configurado con un modelo Claude (Sonnet o Opus) y el menú de personalización de chat localizado.
 
+> **Nota sobre los comandos de este workshop.** Los comandos de `dotnet`, `git` y `code` se escriben igual en macOS, Linux y Windows (PowerShell o cmd). Solo marcamos explicitamente **macOS/Linux** vs **Windows (PowerShell)** cuando la sintaxis difiere (por ejemplo `mkdir -p`, `touch`, `cp -r`). Usa atajos `Ctrl+...` en Windows/Linux y `Cmd+...` en macOS.
+
 ## Paso 1.1: Verificar versiones
+
+**macOS / Linux / Windows** (mismo comando):
 
 ```bash
 dotnet --version    # 8.x

@@ -39,7 +39,9 @@ Sin embargo, hay dos casos legítimos de uso:
 
 ## Cómo copiar al starter
 
-Asumiendo que estás en la raíz de `starter/`:
+Asumiendo que estás en la raíz de `starter/`.
+
+**macOS / Linux**:
 
 ```bash
 # Copiar todo
@@ -48,6 +50,17 @@ cp -r ../ejemplos-finales/.github .
 # O copiar solo un archivo específico
 mkdir -p .github/agents
 cp ../ejemplos-finales/.github/agents/arquitecto.agent.md .github/agents/
+```
+
+**Windows (PowerShell)**:
+
+```powershell
+# Copiar todo
+Copy-Item -Recurse -Force ../ejemplos-finales/.github .
+
+# O copiar solo un archivo específico
+New-Item -ItemType Directory -Force -Path .github/agents | Out-Null
+Copy-Item ../ejemplos-finales/.github/agents/arquitecto.agent.md .github/agents/
 ```
 
 Después de copiar, abre el editor de Chat Customizations

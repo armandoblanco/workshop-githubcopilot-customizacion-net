@@ -33,15 +33,28 @@ Esta parte es importante porque define cómo escribir la skill. Copilot carga la
 
 La consecuencia práctica: el `description` debe ser específico. Si dice "ayuda con cálculos", Copilot no va a saber cuándo cargarla. Si dice "calcula cuotas de préstamo, valida amortización francesa, genera cronogramas de pago", la activación se vuelve confiable.
 
+> Los comandos de creación de archivos difieren entre shells. A continuación incluimos la versión **macOS/Linux** (bash/zsh) y **Windows (PowerShell)**.
+
 ## Paso 5.1: Crear la estructura
 
-Crea la carpeta y los archivos:
+Crea la carpeta y los archivos.
+
+**macOS / Linux**:
 
 ```bash
 mkdir -p .github/skills/calculo-prestamo/ejemplos
 touch .github/skills/calculo-prestamo/SKILL.md
 touch .github/skills/calculo-prestamo/validar.csx
 touch .github/skills/calculo-prestamo/ejemplos/cronograma-ejemplo.json
+```
+
+**Windows (PowerShell)**:
+
+```powershell
+New-Item -ItemType Directory -Force -Path .github/skills/calculo-prestamo/ejemplos | Out-Null
+New-Item -ItemType File -Force -Path .github/skills/calculo-prestamo/SKILL.md | Out-Null
+New-Item -ItemType File -Force -Path .github/skills/calculo-prestamo/validar.csx | Out-Null
+New-Item -ItemType File -Force -Path .github/skills/calculo-prestamo/ejemplos/cronograma-ejemplo.json | Out-Null
 ```
 
 Importante: el nombre de la carpeta debe coincidir exactamente con el campo `name` del frontmatter. Si la carpeta es `calculo-prestamo`, `name` debe ser `calculo-prestamo`. Si no coinciden, la skill no se carga.

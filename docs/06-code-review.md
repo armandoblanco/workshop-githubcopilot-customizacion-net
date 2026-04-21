@@ -2,6 +2,8 @@
 
 Tiempo estimado: 20 minutos.
 
+> Los comandos `git` de este módulo funcionan igual en macOS, Linux y Windows (PowerShell o cmd).
+
 ## Objetivo
 
 Configurar y usar code review en dos lugares:
