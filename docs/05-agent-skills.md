@@ -63,7 +63,7 @@ Importante: el nombre de la carpeta debe coincidir exactamente con el campo `nam
 
 Contenido de `.github/skills/calculo-prestamo/SKILL.md`:
 
-```markdown
+````markdown
 ---
 name: calculo-prestamo
 description: Calcula cuotas mensuales, costo total y cronogramas de pago para préstamos de Contoso Banco usando amortización francesa. Usa esta skill cuando se pida calcular, simular o explicar cálculos de préstamo.
@@ -145,7 +145,7 @@ usas `ToEven` (banker's rounding) los resultados pueden diferir en 0.01.
 
 Si tu implementación no produce estos valores con dos decimales de
 precisión, está mal. No los aceptes con "casi correcto".
-```
+````
 
 ## Paso 5.3: Crear el script de validación
 
