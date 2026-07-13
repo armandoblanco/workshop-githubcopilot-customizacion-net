@@ -1,6 +1,6 @@
 # Workshop avanzado de personalización de GitHub Copilot con .NET
 
-Workshop de dos horas centrado en las cuatro capas de personalización de GitHub Copilot: **instrucciones**, **prompt files**, **custom agents** y **agent skills**. Cierra con el uso de **code review** asistido por Copilot, tanto en VS Code como en GitHub.com.
+Workshop de dos horas centrado en las cuatro capas de personalización de GitHub Copilot: **instrucciones**, **prompt files**, **custom agents** y **agent skills**. Cierra con el uso de **code review** asistido por Copilot, tanto en VS Code como en GitHub.com. Incluye tres módulos de profundización opcionales: **skills avanzadas y de la comunidad**, **hooks** (garantías determinísticas sobre el ciclo del agente) y **optimización de tokens** bajo el modelo de AI Credits.
 
 El escenario es un servicio de préstamos para Contoso Banco. La API ya viene implementada de forma mínima en `starter/`, así que el tiempo se invierte en personalizar Copilot, no en escribir CRUDs.
 
@@ -32,8 +32,14 @@ Sigue los módulos en orden. Cada uno enlaza al siguiente al final.
 
 **Extras**
 - **[4.1 Subagents](docs/04_01-subagents.md)** _(opcional, +25-30 min)_ · orquestación automática y revisión en paralelo. Extiende el módulo 4.
-- **[7. Cuándo usar qué](docs/07-cuando-usar-que.md)** · 5-10 min · árbol de decisión y anti-patrones. Ideal como cierre.
+- **[5.1 Skills avanzadas](docs/05_01-skills-avanzadas.md)** _(opcional, +20-25 min)_ · references con carga progresiva y skills de la comunidad (caveman, markitdown). Extiende el módulo 5.
+- **[7. Cuándo usar qué](docs/07-cuando-usar-que.md)** · 5-10 min · árbol de decisión y anti-patrones. Ideal como cierre de la ruta principal.
 - **[Glosario](docs/glosario.md)** · referencia rápida de términos.
+
+**Profundización** _(+45 min, recomendado como segunda sesión)_
+
+8. **[Hooks](docs/08-hooks.md)** · 25 min · auditoría de prompts y bloqueo determinístico de comandos peligrosos.
+9. **[Optimización de tokens](docs/09-optimizacion-tokens.md)** · 20 min · qué cuesta cada capa bajo AI Credits y qué consejos de ahorro son teatro.
 
 ## Estructura del repositorio
 
@@ -48,8 +54,11 @@ Sigue los módulos en orden. Cada uno enlaza al siguiente al final.
 │   ├── 04-custom-agents.md
 │   ├── 04_01-subagents.md
 │   ├── 05-agent-skills.md
+│   ├── 05_01-skills-avanzadas.md
 │   ├── 06-code-review.md
 │   ├── 07-cuando-usar-que.md
+│   ├── 08-hooks.md
+│   ├── 09-optimizacion-tokens.md
 │   └── glosario.md
 ├── starter/                     Código base que cada participante clona
 │   ├── ContosoBanco.Loans.sln
@@ -61,7 +70,8 @@ Sigue los módulos en orden. Cada uno enlaza al siguiente al final.
         ├── instructions/
         ├── prompts/
         ├── agents/
-        └── skills/
+        ├── skills/              Incluye caveman, markitdown, scoring-crediticio y reportes-regulatorios
+        └── hooks/               Auditoría de prompts y política de comandos
 ```
 
 La carpeta `ejemplos-finales/` existe para que un participante que se atrase pueda copiar los archivos resueltos y seguir el ritmo del grupo. No la usen como copy/paste por defecto: el aprendizaje está en construir cada archivo guiado por Copilot.
@@ -71,7 +81,7 @@ La carpeta `ejemplos-finales/` existe para que un participante que se atrase pue
 - VS Code 1.95 o superior.
 - Extensión **GitHub Copilot** y **GitHub Copilot Chat** (versiones recientes que ya incluyen el menú de **Custom Agents** y **Agent Skills**).
 - **C# Dev Kit**.
-- **.NET 8 SDK** (`dotnet --version` debe devolver 8.x).
+- **.NET 8 SDK** o superior (`dotnet --version` debe devolver 8.x o mayor; los proyectos tienen como target `net8.0`).
 - Cuenta de GitHub con licencia Copilot que tenga **Claude Sonnet 4.5** y/o **Claude Opus 4.5** habilitados en el selector de modelos.
 - Git y una terminal funcional.
 
@@ -94,13 +104,15 @@ GPT-5 funciona razonablemente, pero algunos ejercicios están diseñados pensand
 
 ### Ruta rápida (por si te pierdes)
 
-[Mapa](docs/00-mapa-personalizacion.md) → [Setup](docs/01-setup.md) → [Instrucciones](docs/02-instrucciones-personalizadas.md) → [Prompts](docs/03-prompt-files.md) → [Agentes](docs/04-custom-agents.md) → [Subagents](docs/04_01-subagents.md) _(opcional)_ → [Skills](docs/05-agent-skills.md) → [Code review](docs/06-code-review.md) → [Cuándo usar qué](docs/07-cuando-usar-que.md)
+[Mapa](docs/00-mapa-personalizacion.md) → [Setup](docs/01-setup.md) → [Instrucciones](docs/02-instrucciones-personalizadas.md) → [Prompts](docs/03-prompt-files.md) → [Agentes](docs/04-custom-agents.md) → [Subagents](docs/04_01-subagents.md) _(opcional)_ → [Skills](docs/05-agent-skills.md) → [Skills avanzadas](docs/05_01-skills-avanzadas.md) _(opcional)_ → [Code review](docs/06-code-review.md) → [Cuándo usar qué](docs/07-cuando-usar-que.md) → [Hooks](docs/08-hooks.md) → [Tokens](docs/09-optimizacion-tokens.md)
 
 ## Notas para el instructor
 
 El módulo 4 (custom agents) y el módulo 5 (skills) son los más densos. Si el grupo va lento en los primeros módulos, comprime el módulo 6 (code review) y déjalo como demostración en vivo en lugar de práctica individual. La parte irrenunciable es que cada participante cree al menos un agente, una skill y un prompt file. Sin eso, el workshop pierde sentido.
 
-No intentes cubrir todo el frontmatter de cada formato. Cubre lo mínimo viable y deja los campos avanzados (`hooks`, `mcp-servers`, `disable-model-invocation`) como lectura posterior en `docs/glosario.md`.
+No intentes cubrir todo el frontmatter de cada formato. Cubre lo mínimo viable y deja los campos avanzados (`mcp-servers` y similares) como lectura posterior en `docs/glosario.md`. Los hooks, que antes eran solo lectura posterior, ahora tienen módulo propio ([módulo 8](docs/08-hooks.md)).
+
+Los módulos 5.1, 8 y 9 no caben en las dos horas de la ruta principal. Funcionan bien como una segunda sesión de ~70 minutos (5.1 + 8 + 9 en ese orden), o como material auto-guiado. El módulo 9 no requiere teclado y funciona como cierre de conversación con equipos que ya pagan Copilot: la discusión de costos con el billing dashboard real del cliente suele ser la parte de mayor valor. Para el módulo 8, avisa a los participantes de macOS/Linux que necesitan `jq` instalado (`brew install jq` o `apt install jq`); en Windows se necesita PowerShell 7+.
 
 ## Licencia
 

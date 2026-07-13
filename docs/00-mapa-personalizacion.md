@@ -137,4 +137,6 @@ Entender ese orden explica por qué:
 - Si apenas empiezas: [Módulo 1: Setup](01-setup.md).
 - Si ya viste agentes y quieres orquestación automática: [Módulo 4.1: Subagents](04_01-subagents.md).
 - Si quieres el árbol de decisión con anti-patrones: [Módulo 7: Cuándo usar qué](07-cuando-usar-que.md).
+- Si buscas garantías que el modelo no pueda ignorar (auditoría, bloqueo de comandos): [Módulo 8: Hooks](08-hooks.md).
+- Si te preocupa el costo bajo AI Credits: [Módulo 9: Optimización de tokens](09-optimizacion-tokens.md).
 - Si te confunde algún término concreto: [Glosario](glosario.md).

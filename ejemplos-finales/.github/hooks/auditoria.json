@@ -1,0 +1,13 @@
+{
+  "version": 1,
+  "hooks": {
+    "userPromptSubmitted": [
+      {
+        "type": "command",
+        "bash": "INPUT=$(cat); mkdir -p .copilot-logs; echo \"$INPUT\" | jq -c '{ts: .timestamp, prompt: .prompt}' >> .copilot-logs/audit.jsonl",
+        "powershell": "$input_json = [Console]::In.ReadToEnd() | ConvertFrom-Json; New-Item -ItemType Directory -Force -Path .copilot-logs | Out-Null; @{ts=$input_json.timestamp; prompt=$input_json.prompt} | ConvertTo-Json -Compress | Add-Content .copilot-logs/audit.jsonl",
+        "timeoutSec": 10
+      }
+    ]
+  }
+}

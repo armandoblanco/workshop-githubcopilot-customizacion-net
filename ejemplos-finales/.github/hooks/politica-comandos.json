@@ -1,0 +1,13 @@
+{
+  "version": 1,
+  "hooks": {
+    "preToolUse": [
+      {
+        "type": "command",
+        "bash": "bash .github/hooks/scripts/bloquear-comandos.sh",
+        "powershell": "pwsh -File .github/hooks/scripts/bloquear-comandos.ps1",
+        "timeoutSec": 10
+      }
+    ]
+  }
+}

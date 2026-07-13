@@ -4,7 +4,9 @@ Tiempo estimado: 20 minutos.
 
 ## Objetivo
 
-Crear una skill que enseñe a Copilot a calcular cuotas de préstamo aplicando la metodología correcta del banco. La skill incluye un script de validación que Copilot puede correr para verificar sus propios cálculos.
+Crear una skill que enseñe a Copilot a **clasificar el riesgo crediticio** de un solicitante aplicando la tabla de scoring del banco y sus reglas duras. La skill incluye un script de validación que Copilot puede correr para verificar su propia implementación.
+
+Ojo: esto es a propósito **una tarea distinta** a lo que hiciste en los módulos anteriores. Las instrucciones (módulo 2) y los prompts (módulo 3) giraban alrededor de calcular la cuota y revisar el préstamo. Aquí la skill decide **si se aprueba o rechaza** al cliente, que es conocimiento procedimental nuevo: un modelo de puntaje más una capa de reglas que lo sobrescriben.
 
 ## Conceptos clave
 
@@ -31,7 +33,7 @@ Esta parte es importante porque define cómo escribir la skill. Copilot carga la
 
 3. **Recursos**: solo carga archivos auxiliares (scripts, ejemplos) cuando los referencia desde el `SKILL.md` y los necesita.
 
-La consecuencia práctica: el `description` debe ser específico. Si dice "ayuda con cálculos", Copilot no va a saber cuándo cargarla. Si dice "calcula cuotas de préstamo, valida amortización francesa, genera cronogramas de pago", la activación se vuelve confiable.
+La consecuencia práctica: el `description` debe ser específico. Si dice "ayuda con cálculos", Copilot no va a saber cuándo cargarla. Si dice "clasifica el riesgo crediticio de un solicitante, calcula su score y aplica las reglas de aprobación o rechazo", la activación se vuelve confiable.
 
 > Los comandos de creación de archivos difieren entre shells. A continuación incluimos la versión **macOS/Linux** (bash/zsh) y **Windows (PowerShell)**.
 
@@ -42,196 +44,75 @@ Crea la carpeta y los archivos.
 **macOS / Linux**:
 
 ```bash
-mkdir -p .github/skills/calculo-prestamo/ejemplos
-touch .github/skills/calculo-prestamo/SKILL.md
-touch .github/skills/calculo-prestamo/validar.csx
-touch .github/skills/calculo-prestamo/ejemplos/cronograma-ejemplo.json
+mkdir -p .github/skills/scoring-crediticio/ejemplos
+touch .github/skills/scoring-crediticio/SKILL.md
+touch .github/skills/scoring-crediticio/validar-scoring.csx
+touch .github/skills/scoring-crediticio/ejemplos/caso-scoring.json
 ```
 
 **Windows (PowerShell)**:
 
 ```powershell
-New-Item -ItemType Directory -Force -Path .github/skills/calculo-prestamo/ejemplos | Out-Null
-New-Item -ItemType File -Force -Path .github/skills/calculo-prestamo/SKILL.md | Out-Null
-New-Item -ItemType File -Force -Path .github/skills/calculo-prestamo/validar.csx | Out-Null
-New-Item -ItemType File -Force -Path .github/skills/calculo-prestamo/ejemplos/cronograma-ejemplo.json | Out-Null
+New-Item -ItemType Directory -Force -Path .github/skills/scoring-crediticio/ejemplos | Out-Null
+New-Item -ItemType File -Force -Path .github/skills/scoring-crediticio/SKILL.md | Out-Null
+New-Item -ItemType File -Force -Path .github/skills/scoring-crediticio/validar-scoring.csx | Out-Null
+New-Item -ItemType File -Force -Path .github/skills/scoring-crediticio/ejemplos/caso-scoring.json | Out-Null
 ```
 
-Importante: el nombre de la carpeta debe coincidir exactamente con el campo `name` del frontmatter. Si la carpeta es `calculo-prestamo`, `name` debe ser `calculo-prestamo`. Si no coinciden, la skill no se carga.
+Importante: el nombre de la carpeta debe coincidir exactamente con el campo `name` del frontmatter. Si la carpeta es `scoring-crediticio`, `name` debe ser `scoring-crediticio`. Si no coinciden, la skill no se carga.
 
 ## Paso 5.2: Escribir el SKILL.md
 
-Contenido de `.github/skills/calculo-prestamo/SKILL.md`:
+El contenido completo está en [`ejemplos-finales/.github/skills/scoring-crediticio/SKILL.md`](../ejemplos-finales/.github/skills/scoring-crediticio/SKILL.md). Las ideas que lo hacen una buena skill:
 
-````markdown
----
-name: calculo-prestamo
-description: Calcula cuotas mensuales, costo total y cronogramas de pago para préstamos de Contoso Banco usando amortización francesa. Usa esta skill cuando se pida calcular, simular o explicar cálculos de préstamo.
----
+- **Un `description` específico** que enumera cuándo activarse (evaluar, clasificar, aprobar/rechazar una solicitud, calcular el score).
+- **La metodología completa en dos capas.** No basta con una suma de puntos: primero un score numérico y después reglas duras que lo pueden sobrescribir. Ese matiz es lo que convierte un dato en conocimiento procedimental que vale la pena empacar.
+- **Casos de prueba con valores esperados**, para que Copilot valide su implementación en vez de "confiar" en que quedó bien.
 
-# Cálculo de préstamos de Contoso Banco
+El corazón de la skill es esta estructura de decisión. Score base 500, se suman
+puntos por cuatro factores (relación cuota/ingreso, historial, antigüedad
+laboral, relación monto/ingreso), se recorta a `[300, 850]` y se mapea a una
+banda A/B/C/D. Después, dos reglas duras pueden **degradar** la decisión:
 
-Esta skill encapsula la metodología de cálculo de préstamos de Contoso Banco.
-Úsala cuando el usuario pida cualquiera de estas cosas:
+- **RD-1**: historial `malo` → Rechazado, sin importar el score.
+- **RD-2**: DTI > 0.45 → nunca aprobado automático (tope banda C).
 
-- Simular un préstamo (calcular la cuota mensual antes de crearlo).
-- Generar el cronograma de pagos.
-- Explicar por qué un cálculo da cierto resultado.
-- Validar que un código de cálculo es correcto.
-
-## Fórmula de amortización francesa
-
-La cuota mensual constante se calcula así:
-
-```
-cuota = monto * (i * (1 + i)^n) / ((1 + i)^n - 1)
-```
-
-Donde:
-- `monto` es el capital prestado.
-- `i` es la tasa de interés mensual (tasa anual / 12).
-- `n` es el plazo en meses.
-
-Caso especial: si la tasa es 0, la cuota es `monto / n`. La fórmula anterior
-da división entre cero.
-
-## Generación del cronograma
-
-Cada fila del cronograma tiene:
-
-- Número de cuota (1, 2, ..., n).
-- Cuota total (constante).
-- Interés del periodo: `saldo_inicial * i`.
-- Capital del periodo: `cuota - interés`.
-- Saldo final: `saldo_inicial - capital`.
-
-El primer saldo inicial es el monto del préstamo. La última cuota debe dejar
-el saldo en exactamente 0. Si por redondeos no queda en cero, ajusta la
-última cuota al saldo restante.
-
-## Reglas operativas del banco
-
-- Monto válido: entre 1000 MXN y 5000000 MXN.
-- Plazo válido: entre 6 y 60 meses.
-- Tasa siempre se almacena como decimal anual (0.18 representa 18%).
-- Todos los cálculos en `decimal`. No usar `double` en ningún paso intermedio.
-- Redondeo a dos decimales únicamente al mostrar al usuario, no en cálculos.
-
-## Validación de tu propio trabajo
-
-Después de generar código de cálculo, ejecuta el script
-[validar.csx](./validar.csx) con tres casos de prueba para confirmar que tu
-implementación da los mismos resultados que los esperados:
-
-```
-dotnet script .github/skills/calculo-prestamo/validar.csx -- <ruta-a-tu-implementacion>
-```
-
-Si los resultados no coinciden con la salida esperada (ver el archivo de
-ejemplo [cronograma-ejemplo.json](./ejemplos/cronograma-ejemplo.json)), tu
-implementación tiene un bug. Reporta el bug al usuario antes de declarar la
-tarea completa.
-
-## Casos de prueba estándar
-
-| Caso | Monto | Tasa anual | Plazo | Cuota esperada |
-|------|-------|------------|-------|----------------|
-| 1 | 100000 | 0.18 | 12 | 9168.00 |
-| 2 | 50000 | 0.12 | 24 | 2353.67 |
-| 3 | 200000 | 0.00 | 36 | 5555.56 |
-
-Valores redondeados a dos decimales con `MidpointRounding.AwayFromZero`. Si
-usas `ToEven` (banker's rounding) los resultados pueden diferir en 0.01.
-
-Si tu implementación no produce estos valores con dos decimales de
-precisión, está mal. No los aceptes con "casi correcto".
-````
+Copia el `SKILL.md` de referencia a tu `.github/skills/scoring-crediticio/` o
+reconstrúyelo guiado por Copilot. Lo importante es que quede la tabla de puntaje,
+las bandas y las dos reglas duras.
 
 ## Paso 5.3: Crear el script de validación
 
-Contenido de `.github/skills/calculo-prestamo/validar.csx`:
+El script vive en [`ejemplos-finales/.github/skills/scoring-crediticio/validar-scoring.csx`](../ejemplos-finales/.github/skills/scoring-crediticio/validar-scoring.csx). Implementa las dos capas (puntaje + reglas duras) y comprueba los tres casos estándar:
 
 ```csharp
-#!/usr/bin/env dotnet-script
-// Script de validación de cálculo de cuotas.
-// Uso: dotnet script validar.csx -- <ruta-al-csproj-de-la-implementacion>
-// Compara contra los casos de prueba estándar de Contoso Banco.
+// Extracto: la capa 2 es la que suele faltar en una implementación ingenua.
+int score = Math.Clamp(suma, 300, 850);
 
-decimal CalcularCuotaEsperada(decimal monto, decimal tasaAnual, int plazoMeses)
-{
-    if (tasaAnual == 0m)
-        return Math.Round(monto / plazoMeses, 2, MidpointRounding.AwayFromZero);
+string banda =
+    score >= 720 ? "A" :
+    score >= 660 ? "B" :
+    score >= 600 ? "C" : "D";
 
-    decimal i = tasaAnual / 12m;
-    decimal factor = 1m;
-    for (int k = 0; k < plazoMeses; k++)
-        factor *= (1m + i);
-
-    decimal cuota = monto * (i * factor) / (factor - 1m);
-    return Math.Round(cuota, 2, MidpointRounding.AwayFromZero);
-}
-
-var casos = new (decimal monto, decimal tasa, int plazo, decimal esperado)[]
-{
-    (100000m, 0.18m, 12, 9168.00m),
-    (50000m,  0.12m, 24, 2353.67m),
-    (200000m, 0.00m, 36, 5555.56m)
-};
-
-bool todosPasan = true;
-foreach (var caso in casos)
-{
-    var calculada = CalcularCuotaEsperada(caso.monto, caso.tasa, caso.plazo);
-
-    var diferencia = Math.Abs(calculada - caso.esperado);
-    var paso = diferencia <= 0.01m;
-
-    Console.WriteLine(
-        $"Caso monto={caso.monto} tasa={caso.tasa} plazo={caso.plazo}: " +
-        $"esperado {caso.esperado}, calculado {calculada} - " +
-        (paso ? "OK" : "FALLA"));
-
-    if (!paso) todosPasan = false;
-}
-
-Environment.Exit(todosPasan ? 0 : 1);
+if (historial == "malo")
+    banda = "D";                                   // RD-1
+else if (dti > 0.45m && (banda == "A" || banda == "B"))
+    banda = "C";                                   // RD-2
 ```
 
-Si los participantes no tienen `dotnet-script` instalado, pueden instalarlo con `dotnet tool install -g dotnet-script`. Alternativa: el script lo puede ejecutar Copilot directamente desde el chat usando la tool de comandos.
+Cópialo completo desde la referencia. Si los participantes no tienen `dotnet-script` instalado, pueden instalarlo con `dotnet tool install -g dotnet-script`. Alternativa: el script lo puede ejecutar Copilot directamente desde el chat usando la tool de comandos.
 
-## Paso 5.4: Crear el ejemplo de cronograma
+## Paso 5.4: Crear el ejemplo de salida
 
-Contenido de `.github/skills/calculo-prestamo/ejemplos/cronograma-ejemplo.json`:
+El archivo `ejemplos/caso-scoring.json` documenta la salida esperada de los tres casos, incluido el desglose de puntos. El caso 3 es el importante: score 720 (banda A por puntaje) pero **decisión final Rechazado** porque la regla dura RD-1 lo degrada. Cópialo desde [`ejemplos-finales/.github/skills/scoring-crediticio/ejemplos/caso-scoring.json`](../ejemplos-finales/.github/skills/scoring-crediticio/ejemplos/caso-scoring.json).
 
-```json
-{
-  "descripcion": "Ejemplo de salida esperada para monto=100000 MXN, tasa=18% anual, plazo=12 meses.",
-  "entrada": {
-    "monto": 100000,
-    "tasaAnual": 0.18,
-    "plazoMeses": 12
-  },
-  "resultado": {
-    "cuotaMensual": 9168.00,
-    "costoTotalAjustado": 110015.99,
-    "interesesTotales": 10015.99
-  },
-  "primerasFilas": [
-    { "numero": 1, "cuota": 9168.00, "interes": 1500.00, "capital": 7668.00, "saldoFinal": 92332.00 },
-    { "numero": 2, "cuota": 9168.00, "interes": 1384.98, "capital": 7783.02, "saldoFinal": 84548.98 },
-    { "numero": 3, "cuota": 9168.00, "interes": 1268.23, "capital": 7899.77, "saldoFinal": 76649.21 }
-  ],
-  "ultimaFila": {
-    "numero": 12, "cuota": 9167.99, "interes": 135.49, "capital": 9032.50, "saldoFinal": 0.00
-  }
-}
-```
+Ese caso es la mejor prueba de la skill: una implementación que solo suma puntos y olvida las reglas duras **aprueba** el caso 3. La skill correcta lo rechaza.
 
 ## Paso 5.5: Verificar que la skill aparece
 
 1. Abre el editor de Chat Customizations (`Chat: Open Chat Customizations`).
 2. Ve a la pestaña **Skills**.
-3. Debería aparecer `calculo-prestamo` con un check verde.
+3. Debería aparecer `scoring-crediticio` con un check verde.
 
 Si no aparece, las causas comunes son:
 
@@ -246,24 +127,24 @@ Hay dos maneras de invocar una skill: explícitamente con `/` o dejando que Copi
 **Invocación explícita:**
 
 ```
-/calculo-prestamo Genera el método CalcularCuota en PrestamoServicio.cs y valídalo con los casos de prueba estándar
+/scoring-crediticio Implementa un método EvaluarSolicitud en PrestamoServicio.cs que reciba ingreso, cuota, historial, antigüedad y monto, y devuelva score, banda y decisión. Valídalo con los casos estándar.
 ```
 
 Verifica que:
 
-1. Copilot genera el método usando la fórmula correcta.
-2. Detecta el caso especial de tasa 0.
-3. Usa `decimal` en todos lados.
+1. Copilot implementa la tabla de puntaje completa.
+2. Implementa **las dos reglas duras**, no solo la suma.
+3. Usa `decimal` en el DTI y la relación de monto.
 4. Ejecuta el script de validación al final.
-5. Reporta los resultados de los tres casos de prueba.
+5. Reporta los resultados de los tres casos, incluido el caso 3 (rechazado por RD-1).
 
 **Invocación automática:**
 
 ```
-Necesito agregar al endpoint POST /api/prestamos/simular la generación del cronograma de pagos completo
+Un cliente gana 80000 al mes, la cuota sería 12000, tiene historial malo y 60 meses de antigüedad, pide 100000. ¿Se le aprueba el préstamo?
 ```
 
-Si la skill está bien escrita, Copilot debería decidir cargarla por su cuenta basándose en el `description`. Verás en el log del chat algo como "Loaded skill: calculo-prestamo".
+Si la skill está bien escrita, Copilot debería decidir cargarla por su cuenta basándose en el `description`. Verás en el log del chat algo como "Loaded skill: scoring-crediticio", y la respuesta correcta es **Rechazado** por historial malo, aunque el score sea 720.
 
 Si no la carga automáticamente, el `description` no es suficientemente específico. Iterá sobre él hasta que la activación sea confiable.
 
@@ -296,4 +177,6 @@ Una señal de que tienes overkill: tu skill tiene 50 líneas de Markdown sin scr
 
 ## Siguiente
 
-[Módulo 6: Code review](06-code-review.md)
+[Módulo 5.1: Skills avanzadas y skills de la comunidad](05_01-skills-avanzadas.md) _(opcional, extiende este módulo con references, flags de invocación y skills de terceros como caveman y markitdown)_
+
+O salta directo a [Módulo 6: Code review](06-code-review.md).

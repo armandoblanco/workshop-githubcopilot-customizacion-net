@@ -10,6 +10,10 @@ Modo de operación de Copilot Chat donde el asistente puede modificar archivos y
 
 Carpeta con un `SKILL.md` y opcionalmente scripts y recursos, que enseña a Copilot una capacidad específica. Es un estándar abierto que funciona en VS Code, Copilot CLI y el coding agent de la nube.
 
+## AI Credits (GitHub)
+
+Unidad de facturación por uso de Copilot desde el 1 de junio de 2026. Un crédito equivale a $0.01 USD y el consumo se calcula por tokens (entrada, salida y caché) a la tarifa API del modelo usado. Reemplaza a los premium requests en planes mensuales. Ver [módulo 9](09-optimizacion-tokens.md).
+
 ## Ask (modo)
 
 Modo de Copilot Chat donde el asistente solo responde preguntas sin modificar archivos. Útil para exploración y aprendizaje.
@@ -54,6 +58,10 @@ Bloque YAML al principio de archivos Markdown delimitado por `---`. Define metad
 
 Botón que aparece al final del turno de un custom agent y permite pasar al siguiente agente del flujo con contexto preservado y un prompt pre-rellenado.
 
+## Hook
+
+Comando de shell definido en `.github/hooks/*.json` que se ejecuta en puntos fijos del ciclo de vida de un agente (inicio de sesión, envío de prompt, antes y después de una tool). A diferencia de las instrucciones, es determinístico: el hook `preToolUse` puede denegar ejecuciones sin depender de que el modelo coopere. Ver [módulo 8](08-hooks.md).
+
 ## Instrucciones path-specific
 
 Archivos `.github/instructions/*.instructions.md` con un campo `applyTo` que define a qué archivos aplican. Permiten reglas específicas por lenguaje, capa o tipo de archivo.
@@ -68,7 +76,7 @@ Modo donde Copilot genera un plan antes de ejecutar. La ejecución requiere apro
 
 ## Premium request
 
-Llamada al modelo que cuenta contra una cuota mensual incluida en planes pagos de Copilot. Modos como Agent y modelos avanzados (Claude Opus, GPT-5) consumen premium requests.
+Llamada al modelo que cuenta contra una cuota mensual incluida en planes pagos de Copilot. Modos como Agent y modelos avanzados (Claude Opus, GPT-5) consumen premium requests. **Modelo legacy desde el 1 de junio de 2026**: los planes mensuales usan ahora AI Credits; solo los planes anuales de Pro/Pro+ conservan premium requests hasta su renovación. Ver [módulo 9](09-optimizacion-tokens.md).
 
 ## Prompt file
 

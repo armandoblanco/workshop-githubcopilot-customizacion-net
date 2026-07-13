@@ -24,3 +24,6 @@ out/
 # dotnet
 *.userosscache
 *.sln.docstates
+
+# Logs de hooks de Copilot (módulo 8)
+.copilot-logs/

@@ -28,14 +28,41 @@ Sin embargo, hay dos casos legítimos de uso:
 ├── agents/
 │   ├── arquitecto.agent.md              Módulo 4
 │   ├── implementador.agent.md           Módulo 4
-│   └── revisor-seguridad.agent.md       Módulo 4
-└── skills/
-    └── calculo-prestamo/                Módulo 5
-        ├── SKILL.md
-        ├── validar.csx
-        └── ejemplos/
-            └── cronograma-ejemplo.json
+│   ├── revisor-seguridad.agent.md       Módulo 4
+│   ├── planificador.agent.md            Módulo 4.1 (subagent worker)
+│   ├── codificador.agent.md             Módulo 4.1 (subagent worker)
+│   ├── auditor.agent.md                 Módulo 4.1 (subagent worker)
+│   ├── feature-builder.agent.md         Módulo 4.1 (coordinador)
+│   └── revisor-360.agent.md             Módulo 4.1 (revisión en paralelo)
+├── skills/
+│   ├── scoring-crediticio/              Módulo 5
+│   │   ├── SKILL.md
+│   │   ├── validar-scoring.csx
+│   │   └── ejemplos/
+│   │       └── caso-scoring.json
+│   ├── reportes-regulatorios/           Módulo 5.1
+│   │   ├── SKILL.md
+│   │   └── references/
+│   │       ├── plantilla-cartera-vencida.md
+│   │       ├── plantilla-buro-mensual.md
+│   │       └── plantilla-operaciones-inusuales.md
+│   ├── caveman/                         Módulo 5.1 (comunidad, adaptada)
+│   │   └── SKILL.md
+│   └── markitdown/                      Módulo 5.1 (comunidad, adaptada)
+│       └── SKILL.md
+└── hooks/
+    ├── auditoria.json                   Módulo 8
+    ├── politica-comandos.json           Módulo 8
+    └── scripts/
+        ├── bloquear-comandos.sh
+        └── bloquear-comandos.ps1
 ```
+
+Las skills `caveman` y `markitdown` son adaptaciones originales en español
+de proyectos de la comunidad ([JuliusBrussee/caveman](https://github.com/JuliusBrussee/caveman)
+y [microsoft/markitdown](https://github.com/microsoft/markitdown)). Antes de
+copiar cualquier skill de terceros a un repo real, lee el checklist de
+seguridad del [módulo 5.1](../docs/05_01-skills-avanzadas.md).
 
 ## Cómo copiar al starter
 

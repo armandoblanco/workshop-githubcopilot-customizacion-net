@@ -1,0 +1,80 @@
+{
+  "descripcion": "Salida esperada del scoring CB-RISK-2024 para los tres casos estándar. El caso 3 demuestra la capa 2: score alto pero rechazado por regla dura RD-1.",
+  "casos": [
+    {
+      "id": 1,
+      "entrada": {
+        "ingresoMensual": 30000,
+        "cuotaMensual": 6000,
+        "historial": "excelente",
+        "antiguedadMeses": 48,
+        "monto": 100000
+      },
+      "calculo": {
+        "dti": 0.20,
+        "relacionMontoIngresoAnual": 0.28,
+        "puntosDti": 150,
+        "puntosHistorial": 120,
+        "puntosAntiguedad": 80,
+        "puntosMonto": 50,
+        "sumaCruda": 900
+      },
+      "resultado": {
+        "score": 850,
+        "bandaPorScore": "A",
+        "reglaDuraAplicada": null,
+        "decisionFinal": "Aprobado automático"
+      }
+    },
+    {
+      "id": 2,
+      "entrada": {
+        "ingresoMensual": 20000,
+        "cuotaMensual": 8000,
+        "historial": "bueno",
+        "antiguedadMeses": 18,
+        "monto": 250000
+      },
+      "calculo": {
+        "dti": 0.40,
+        "relacionMontoIngresoAnual": 1.04,
+        "puntosDti": 20,
+        "puntosHistorial": 50,
+        "puntosAntiguedad": 40,
+        "puntosMonto": 10,
+        "sumaCruda": 620
+      },
+      "resultado": {
+        "score": 620,
+        "bandaPorScore": "C",
+        "reglaDuraAplicada": null,
+        "decisionFinal": "Revisión manual obligatoria"
+      }
+    },
+    {
+      "id": 3,
+      "entrada": {
+        "ingresoMensual": 80000,
+        "cuotaMensual": 12000,
+        "historial": "malo",
+        "antiguedadMeses": 60,
+        "monto": 100000
+      },
+      "calculo": {
+        "dti": 0.15,
+        "relacionMontoIngresoAnual": 0.10,
+        "puntosDti": 150,
+        "puntosHistorial": -60,
+        "puntosAntiguedad": 80,
+        "puntosMonto": 50,
+        "sumaCruda": 720
+      },
+      "resultado": {
+        "score": 720,
+        "bandaPorScore": "A",
+        "reglaDuraAplicada": "RD-1 (historial malo)",
+        "decisionFinal": "Rechazado"
+      }
+    }
+  ]
+}

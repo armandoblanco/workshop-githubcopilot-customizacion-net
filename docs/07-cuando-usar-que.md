@@ -91,3 +91,12 @@ Una práctica que funciona: revisión trimestral de la carpeta `.github/`, en el
 ## Cierre
 
 El valor de personalizar Copilot no está en tener muchos archivos, está en que las cosas correctas estén en los lugares correctos. Empieza simple: un `copilot-instructions.md` y un par de prompt files. Mide qué te molesta repetir, y solo entonces sube en complejidad.
+
+## Siguiente
+
+El workshop tiene dos módulos de profundización que asumen todo lo anterior:
+
+- [Módulo 8: Hooks](08-hooks.md) · garantías determinísticas donde las instrucciones son probabilísticas: auditoría y bloqueo de comandos peligrosos.
+- [Módulo 9: Optimización de tokens](09-optimizacion-tokens.md) · qué cuesta cada capa que construiste bajo el modelo de AI Credits, y qué consejos de ahorro son teatro.
+
+Nota sobre el árbol de decisión de este módulo: los hooks no aparecen en él porque no compiten con las cuatro capas de personalización. Las capas le dicen al modelo qué hacer; los hooks garantizan qué puede y no puede pasar. El módulo 8 desarrolla esa distinción.
